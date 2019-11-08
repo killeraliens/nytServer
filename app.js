@@ -1,9 +1,16 @@
 const express = require('express')
 const app = express()
+
 const morgan = require('morgan')
 const books = require('./books.js')
+const cors = require('cors')
 
 app.use(morgan('dev'))
+app.use(cors())
+
+app.get('/', (req, res) => {
+  res.send('go to /books')
+})
 
 app.get('/books', (req, res) => {
   const { search = "", sort } = req.query;
@@ -22,16 +29,12 @@ app.get('/books', (req, res) => {
     }
 
     searchResults = searchResults.sort((a, b) => {
-      console.log("A:", a)
-      console.log("B:", b)
       return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0;
     })
   }
 
   res.json(searchResults);
-
 })
 
-app.listen(8000, () => {
-  console.log('nytServer listening on port 8000')
-})
+module.exports = app;
+
